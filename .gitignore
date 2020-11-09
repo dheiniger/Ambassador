@@ -38,3 +38,6 @@ build/
 
 #intellij
 .idea/
+*.iml
+
+src/ambassador/properties.clj
