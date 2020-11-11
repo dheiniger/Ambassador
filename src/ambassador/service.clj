@@ -6,13 +6,49 @@
             [ambassador.db :as db]
             [clojure.data.json :as json]))
 
-(defn pages
+
+(defn get-site
+  [request]
+  (let [path-params (:path-params request)
+        site-id (:site-id path-params)]
+    {:status  200
+     :headers {"Content-Type" "application/json"}
+     :body    (json/write-str {:site-id site-id})}))
+
+(defn get-posts
+  [request]
+  (let [path-params (:path-params request)
+        site-id (Integer/parseInt (:site-id path-params))
+        results (db/retrieve-posts site-id)]
+    {:status  200
+     :headers {"Content-Type" "application/json"}
+     :body    (time(json/write-str (map #(assoc {} :id (:post-id %)
+                                              :title (:post-title %)
+                                              :date (:post-date %)
+                                              :_links {:href (str "/sites/" site-id "/posts/" (:post-id %))})
+                                   results) :escape-slash false))}))
+
+(defn get-post
+  [request]
+  (let [path-params (:path-params request)
+        site-id (Integer/parseInt (:site-id path-params))
+        post-id (Integer/parseInt (:post-id path-params))
+        results (db/retrieve-post site-id post-id)]
+    {:status  200
+     :headers {"Content-Type" "application/json"}
+     :body    (time(json/write-str (map #(assoc {} :id (:post-id %)
+                                                   :title (:post-title %)
+                                                   :date (:post-date %)
+                                                   :content (:post-content %))
+                                        results) :escape-slash false))}))
+
+(defn get-pages
   [request]
   (let [path-params (:path-params request)
         site-id (Integer/parseInt (:site-id path-params))]
-  {:status 200
-   :headers {"Content-Type" "application/json"}
-   :body (db/retrieve-pages site-id)}))
+    {:status  200
+     :headers {"Content-Type" "application/json"}
+     :body    (db/retrieve-pages site-id)}))
 
 ;; Defines "/" and "/about" routes with their associated :get handlers.
 ;; The interceptors defined after the verb map (e.g., {:get home-page}
@@ -20,7 +56,10 @@
 (def common-interceptors [(body-params/body-params) http/html-body])
 
 ;; Tabular routes
-(def routes #{["/pages/:site-id" :get (conj common-interceptors `pages) :constraints {:site-id #"[0-9]+"}]})
+(def routes #{["/sites/:site-id/" :get (conj common-interceptors `get-site) :constraints {:site-id #"[0-9]+"}]
+              ["/sites/:site-id/posts/" :get (conj common-interceptors `get-posts) :constraints {:site-id #"[0-9]+"}]
+              ["/sites/:site-id/posts/:post-id/" :get (conj common-interceptors `get-post) :constraints {:site-id #"[0-9]+"
+                                                                                                     :post-id    #"[0-9]+"}]})
 
 ;; Map-based routes
 ;(def routes `{"/" {:interceptors [(body-params/body-params) http/html-body]
@@ -36,13 +75,13 @@
 
 ;; Consumed by ambassador.server/create-server
 ;; See http/default-interceptors for additional options you can configure
-(def service {:env :prod
+(def service {:env                     :prod
               ;; You can bring your own non-default interceptors. Make
               ;; sure you include routing and set it up right for
               ;; dev-mode. If you do, many other keys for configuring
               ;; default interceptors will be ignored.
               ;; ::http/interceptors []
-              ::http/routes routes
+              ::http/routes            routes
 
               ;; Uncomment next line to enable CORS support, add
               ;; string(s) specifying scheme, host and port for
@@ -61,16 +100,16 @@
               ;;                                                          :frame-ancestors "'none'"}}
 
               ;; Root for resource interceptor that is available by default.
-              ::http/resource-path "/public"
+              ::http/resource-path     "/public"
 
               ;; Either :jetty, :immutant or :tomcat (see comments in project.clj)
               ;;  This can also be your own chain provider/server-fn -- http://pedestal.io/reference/architecture-overview#_chain_provider
-              ::http/type :jetty
-              ::http/host "0.0.0.0" ;;required for Docker
-              ::http/port 8080
+              ::http/type              :jetty
+              ::http/host              "0.0.0.0"            ;;required for Docker
+              ::http/port              8080
               ;; Options to pass to the container (Jetty)
               ::http/container-options {:h2c? true
-                                        :h2? false
+                                        :h2?  false
                                         ;:keystore "test/hp/keystore.jks"
                                         ;:key-password "password"
                                         ;:ssl-port 8443
