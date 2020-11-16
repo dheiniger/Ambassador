@@ -17,16 +17,20 @@
 
 (defn get-posts
   [request]
-  (let [path-params (:path-params request)
+  (let [query-params (:query-params request)
+        size (:size query-params)
+        page-number (:page_num query-params)
+        path-params (:path-params request)
         site-id (Integer/parseInt (:site-id path-params))
-        results (db/retrieve-posts site-id)]
+        results (db/retrieve-posts site-id size page-number)]
     {:status  200
      :headers {"Content-Type" "application/json"}
-     :body    (time(json/write-str (map #(assoc {} :id (:post-id %)
-                                              :title (:post-title %)
-                                              :date (:post-date %)
-                                              :_links {:href (str "/sites/" site-id "/posts/" (:post-id %))})
-                                   results) :escape-slash false))}))
+     :body    (time (json/write-str (map #(assoc {} :id (:post-id %)
+                                                    :title (:post-title %)
+                                                    :date (:post-date %)
+                                                    :_links {:href (str "/sites/" site-id "/posts/" (:post-id %))})
+                                         results) :escape-slash false))})
+  )
 
 (defn get-post
   [request]
@@ -36,11 +40,11 @@
         results (db/retrieve-post site-id post-id)]
     {:status  200
      :headers {"Content-Type" "application/json"}
-     :body    (time(json/write-str (map #(assoc {} :id (:post-id %)
-                                                   :title (:post-title %)
-                                                   :date (:post-date %)
-                                                   :content (:post-content %))
-                                        results) :escape-slash false))}))
+     :body    (time (json/write-str (map #(assoc {} :id (:post-id %)
+                                                    :title (:post-title %)
+                                                    :date (:post-date %)
+                                                    :content (:post-content %))
+                                         results) :escape-slash false))}))
 
 (defn get-pages
   [request]
@@ -59,7 +63,7 @@
 (def routes #{["/sites/:site-id/" :get (conj common-interceptors `get-site) :constraints {:site-id #"[0-9]+"}]
               ["/sites/:site-id/posts/" :get (conj common-interceptors `get-posts) :constraints {:site-id #"[0-9]+"}]
               ["/sites/:site-id/posts/:post-id/" :get (conj common-interceptors `get-post) :constraints {:site-id #"[0-9]+"
-                                                                                                     :post-id    #"[0-9]+"}]})
+                                                                                                         :post-id #"[0-9]+"}]})
 
 ;; Map-based routes
 ;(def routes `{"/" {:interceptors [(body-params/body-params) http/html-body]

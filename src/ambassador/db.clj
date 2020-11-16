@@ -42,14 +42,21 @@
                           and post_status ='publish'")])]
       (clean-post-results site-id results))))
 
-(defn retrieve-posts [site-id]
-  (time (if-not (spec/valid? integer? site-id)
-          (throw (Exception. "Site ID must be an integer"))
-          (let [posts (jdbc/execute! ds [(str "select * from wp_" site-id "_posts
+(defn retrieve-posts [site-id page-size page-number]
+  (if-not (spec/valid? integer? site-id)
+    (throw (Exception. "Site ID must be an integer")))
+  (time (let [safe-page-size (if (string? page-size) (Integer/parseInt page-size)
+                                                     (or page-size 10))
+              safe-page-number (if (string? page-number) (Integer/parseInt page-number)
+                                                         (or page-number 1))
+              row-start (* (- (or safe-page-number 1) 1) safe-page-size)
+              posts (jdbc/execute! ds [(str "select * from wp_" site-id "_posts
                           where post_type='post'
                           and post_status ='publish'
-                          order by post_date desc")])]
-            (clean-post-results site-id posts)))))
+                          order by post_date desc
+                          limit " row-start ", " safe-page-size)])]
+          (clean-post-results site-id posts))))
+
 
 (defn retrieve-post [site-id post-id]
   (if-not (spec/valid? integer? site-id)
@@ -71,9 +78,11 @@
 (defn retrieve-sermons [siteid]
   (retrieve-page siteid "Sermons"))
 
-(defn test-queries []
-  (jdbc/execute! ds [(str "select * from wp_" 12 "_posts
+(defn test-queries [size page-num]
+  (time (let [row-start (* (- page-num 1) size)]
 
-where  post_status ='publish'
-and post_type='post'
-order by post_date desc")]))
+          (jdbc/execute! ds [(str "SELECT * FROM WP_" 12 "_POSTS
+                          WHERE  POST_STATUS ='publish'
+                          AND POST_TYPE = 'post'
+                          order by post_date desc
+                          limit " row-start ", " size)]))))
