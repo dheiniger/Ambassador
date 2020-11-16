@@ -47,7 +47,8 @@
           (throw (Exception. "Site ID must be an integer"))
           (let [posts (jdbc/execute! ds [(str "select * from wp_" site-id "_posts
                           where post_type='post'
-                          and post_status ='publish'")])]
+                          and post_status ='publish'
+                          order by post_date desc")])]
             (clean-post-results site-id posts)))))
 
 (defn retrieve-post [site-id post-id]
@@ -73,4 +74,6 @@
 (defn test-queries []
   (jdbc/execute! ds [(str "select * from wp_" 12 "_posts
 
-where  post_status ='publish'")]))
+where  post_status ='publish'
+and post_type='post'
+order by post_date desc")]))
