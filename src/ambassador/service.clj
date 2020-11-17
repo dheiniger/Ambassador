@@ -6,15 +6,6 @@
             [ambassador.db :as db]
             [clojure.data.json :as json]))
 
-
-(defn get-site
-  [request]
-  (let [path-params (:path-params request)
-        site-id (:site-id path-params)]
-    {:status  200
-     :headers {"Content-Type" "application/json"}
-     :body    (json/write-str {:site-id site-id})}))
-
 (defn get-posts
   [request]
   (let [query-params (:query-params request)
@@ -29,8 +20,7 @@
                                                     :title (:post-title %)
                                                     :date (:post-date %)
                                                     :_links {:href (str "/sites/" site-id "/posts/" (:post-id %))})
-                                         results) :escape-slash false))})
-  )
+                                         results) :escape-slash false))}))
 
 (defn get-post
   [request]
@@ -54,27 +44,12 @@
      :headers {"Content-Type" "application/json"}
      :body    (db/retrieve-pages site-id)}))
 
-;; Defines "/" and "/about" routes with their associated :get handlers.
-;; The interceptors defined after the verb map (e.g., {:get home-page}
-;; apply to / and its children (/about).
 (def common-interceptors [(body-params/body-params) http/html-body])
 
 ;; Tabular routes
-(def routes #{["/sites/:site-id/" :get (conj common-interceptors `get-site) :constraints {:site-id #"[0-9]+"}]
-              ["/sites/:site-id/posts/" :get (conj common-interceptors `get-posts) :constraints {:site-id #"[0-9]+"}]
+(def routes #{["/sites/:site-id/posts/" :get (conj common-interceptors `get-posts) :constraints {:site-id #"[0-9]+"}]
               ["/sites/:site-id/posts/:post-id/" :get (conj common-interceptors `get-post) :constraints {:site-id #"[0-9]+"
                                                                                                          :post-id #"[0-9]+"}]})
-
-;; Map-based routes
-;(def routes `{"/" {:interceptors [(body-params/body-params) http/html-body]
-;                   :get home-page
-;                   "/about" {:get about-page}}})
-
-;; Terse/Vector-based routes
-;(def routes
-;  `[[["/" {:get home-page}
-;      ^:interceptors [(body-params/body-params) http/html-body]
-;      ["/about" {:get about-page}]]]])
 
 
 ;; Consumed by ambassador.server/create-server
