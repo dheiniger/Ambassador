@@ -1,0 +1,1 @@
+(ns ambassador.properties.properties)

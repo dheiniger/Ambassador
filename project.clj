@@ -16,7 +16,7 @@
                  [org.slf4j/jul-to-slf4j "1.7.26"]
                  [org.slf4j/jcl-over-slf4j "1.7.26"]
                  [org.slf4j/log4j-over-slf4j "1.7.26"]
-                 [mysql/mysql-connector-java "5.1.6"]
+                 [mysql/mysql-connector-java "8.0.24"]
                  [seancorfield/next.jdbc "1.1.613"]
                  [org.clojure/data.json "1.0.0"]
                  [enlive "1.1.6"]]
