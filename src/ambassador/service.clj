@@ -6,8 +6,7 @@
             [ambassador.db :as db]
             [clojure.data.json :as json]
             [postal.core :as postal]
-            [ambassador.properties :as props]
-            [clojure.java.io :as io]))
+            [ambassador.properties :as props]))
 
 (defn give
   [_]
