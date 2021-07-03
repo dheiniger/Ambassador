@@ -23,7 +23,7 @@ jobs:
           docker build -t ambassador $GITHUB_WORKSPACE && wait $!
           docker tag ambassador:latest ${{secrets.AWS_INSTANCE}}/ambassador:latest && wait $!
           docker push ${{secrets.AWS_INSTANCE}}/ambassador:latest && wait $!
-    - name: ls -a via ssh
+    - name: Deploy new version
       uses: garygrossgarten/github-action-ssh@release
       with:
         command: echo ${{secrets.GH_USER_PASSWORD}} | sudo -S ./build.sh
