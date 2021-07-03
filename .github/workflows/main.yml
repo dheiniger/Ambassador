@@ -23,10 +23,10 @@ jobs:
           docker build -t ambassador $GITHUB_WORKSPACE && wait $!
           docker tag ambassador:latest ${{secrets.AWS_INSTANCE}}/ambassador:latest && wait $!
           docker push ${{secrets.AWS_INSTANCE}}/ambassador:latest && wait $!
-    - name: executing remote ssh commands using ssh key
-      uses: appleboy/ssh-action@master
+    - name: ls -a via ssh
+      uses: garygrossgarten/github-action-ssh@release
       with:
+        command: ls -a
         host: ${{ secrets.STAGING_SSH_HOST }}
-        username: ${{ secrets.STAGING_SSH_USER }}
-        key: ${{ secrets.STAGING_SSH_KEY }}
-        script: whoami
+        username: github
+        privateKey: ${{ secrets.STAGING_SSH_KEY}}
