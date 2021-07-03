@@ -1,6 +1,6 @@
 (ns ambassador.db
   (:require [next.jdbc :as jdbc]
-            [ambassador.properties.live :as props]
+            [ambassador.properties :as props]
             [clojure.string :as str]
             [clojure.spec.alpha :as spec]
             [net.cgrand.enlive-html :as html]))
@@ -15,5 +15,6 @@
          :zeroDateTimeBehavior "convertToNull"})
 
 (def ds (jdbc/get-datasource db))
+
 (defn get-tables []
   (jdbc/execute! ds ["SHOW TABLES;"]))
