@@ -40,5 +40,4 @@ build/
 .idea/
 *.iml
 
-/src/ambassador/properties.clj
 src/ambassador/info.txt
