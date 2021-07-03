@@ -39,3 +39,5 @@ jobs:
           SSH_USER: ${{ secrets.STAGING_SSH_USER }}
           SSH_KEY: ${{ secrets.STAGING_SSH_KEY }}
           SSH_HOST: ${{ secrets.STAGING_SSH_HOST }}
+    - name: Deploy
+      run: ssh staging 'sudo ./deploy.sh'
