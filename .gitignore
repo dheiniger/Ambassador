@@ -40,4 +40,5 @@ build/
 .idea/
 *.iml
 
-/src/ambassador/properties/live.clj
+/src/ambassador/properties.clj
+src/ambassador/info.txt

@@ -5,33 +5,39 @@
             [ring.util.response :as ring-resp]
             [ambassador.db :as db]
             [clojure.data.json :as json]
-            [postal.core :as postal]))
+            [postal.core :as postal]
+            [ambassador.properties :as props]))
 
 (defn give
   [_]
   {:status 501
-   :body "Not yet implemented"})
+   :body   "Not yet implemented"})
 
 (defn bible
   [_]
   {:status 501
-   :body "Bible verses are not available here yet"})
+   :body   "Bible verses are not available here yet"})
 
 (defn contact
   [_]
-  (postal/send-message {:from "daniel.r.heiniger@gmail.com"
-                        :to "daniel.r.heiniger@gmail.com"
+  (postal/send-message {:host (:host props/email)
+                        :user (:user props/email)
+                        :pass (:pass props/email)
+                        :port (:port props/email)
+                        :tls  true}
+                       {:from    "daniel.r.heiniger@gmail.com"
+                        :to      "daniel.r.heiniger@gmail.com"
                         :subject "Testing from Clojure app"
-                        :body "Test."})
+                        :body    "Test."})
   {:status 202
-   :body "Confirmed"})
+   :body   "Confirmed"})
 
 (def common-interceptors [(body-params/body-params) http/html-body])
 
 ;; Tabular routes
 (def routes #{["/give" :get (conj common-interceptors `give)]
               ["/bible" :get (conj common-interceptors `bible)]
-              ["/contact" :get (conj common-interceptors `contact)]})
+              ["/contact" :post (conj common-interceptors `contact)]})
 
 
 ;; Consumed by ambassador.server/create-server
