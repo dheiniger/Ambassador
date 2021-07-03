@@ -19,12 +19,6 @@
   {:status 501
    :body   "Bible verses are not available here yet"})
 
-(defn todo []
-  (try
-    (load-file "info.txt")
-    (catch Exception e (prn (str "Could not find file: " (.getMessage e)))
-                       (load-file "src/ambassador/info.txt"))))
-
 (defn contact
   [_]
   (postal/send-message {:host (:host props/email)
