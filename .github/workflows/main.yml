@@ -26,7 +26,7 @@ jobs:
     - name: ls -a via ssh
       uses: garygrossgarten/github-action-ssh@release
       with:
-        command: echo ${{secrets.GH_USER_PASSWORD}} | sudo ./build.sh
+        command: echo ${{secrets.GH_USER_PASSWORD}} | sudo -S ./build.sh
         host: ${{ secrets.STAGING_SSH_HOST }}
         username: github
         privateKey: ${{ secrets.STAGING_SSH_KEY}}
