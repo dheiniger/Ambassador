@@ -1,7 +1,7 @@
 (ns ambassador.properties.live)
 
 (def db
-  {:dbtype "*****"
+  {:dbtype "mysql"
    :host "*****"
    :dbname "*****"
    :user "*****"
