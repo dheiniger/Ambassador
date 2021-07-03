@@ -7,3 +7,9 @@
    :user "application_username"
    :password "password"})
 
+(def email
+  {:host "****"
+   :user "****"
+   :pass "****"
+   :port 587
+   :tls  true})
