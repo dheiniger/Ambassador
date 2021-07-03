@@ -4,52 +4,34 @@
             [io.pedestal.http.body-params :as body-params]
             [ring.util.response :as ring-resp]
             [ambassador.db :as db]
-            [clojure.data.json :as json]))
+            [clojure.data.json :as json]
+            [postal.core :as postal]))
 
-(defn get-posts
-  [request]
-  (let [query-params (:query-params request)
-        size (:size query-params)
-        page-number (:page_num query-params)
-        path-params (:path-params request)
-        site-id (Integer/parseInt (:site-id path-params))
-        results (db/retrieve-posts site-id size page-number)]
-    {:status  200
-     :headers {"Content-Type" "application/json"}
-     :body    (time (json/write-str (map #(assoc {} :id (:post-id %)
-                                                    :title (:post-title %)
-                                                    :date (:post-date %)
-                                                    :_links {:href (str "/sites/" site-id "/posts/" (:post-id %))})
-                                         results) :escape-slash false))}))
+(defn give
+  [_]
+  {:status 501
+   :body "Not yet implemented"})
 
-(defn get-post
-  [request]
-  (let [path-params (:path-params request)
-        site-id (Integer/parseInt (:site-id path-params))
-        post-id (Integer/parseInt (:post-id path-params))
-        results (db/retrieve-post site-id post-id)]
-    {:status  200
-     :headers {"Content-Type" "application/json"}
-     :body    (time (json/write-str (map #(assoc {} :id (:post-id %)
-                                                    :title (:post-title %)
-                                                    :date (:post-date %)
-                                                    :content (:post-content %))
-                                         results) :escape-slash false))}))
+(defn bible
+  [_]
+  {:status 501
+   :body "Bible verses are not available here yet"})
 
-(defn get-pages
-  [request]
-  (let [path-params (:path-params request)
-        site-id (Integer/parseInt (:site-id path-params))]
-    {:status  200
-     :headers {"Content-Type" "application/json"}
-     :body    (db/retrieve-pages site-id)}))
+(defn contact
+  [_]
+  (postal/send-message {:from "daniel.r.heiniger@gmail.com"
+                        :to "daniel.r.heiniger@gmail.com"
+                        :subject "Testing from Clojure app"
+                        :body "Test."})
+  {:status 202
+   :body "Confirmed"})
 
 (def common-interceptors [(body-params/body-params) http/html-body])
 
 ;; Tabular routes
-(def routes #{["/sites/:site-id/posts/" :get (conj common-interceptors `get-posts) :constraints {:site-id #"[0-9]+"}]
-              ["/sites/:site-id/posts/:post-id/" :get (conj common-interceptors `get-post) :constraints {:site-id #"[0-9]+"
-                                                                                                         :post-id #"[0-9]+"}]})
+(def routes #{["/give" :get (conj common-interceptors `give)]
+              ["/bible" :get (conj common-interceptors `bible)]
+              ["/contact" :get (conj common-interceptors `contact)]})
 
 
 ;; Consumed by ambassador.server/create-server

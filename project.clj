@@ -19,7 +19,8 @@
                  [mysql/mysql-connector-java "8.0.24"]
                  [seancorfield/next.jdbc "1.1.613"]
                  [org.clojure/data.json "1.0.0"]
-                 [enlive "1.1.6"]]
+                 [enlive "1.1.6"]
+                 [com.draines/postal "2.0.4"]]
   :min-lein-version "2.0.0"
   :resource-paths ["config", "resources"]
   ;; If you use HTTP/2 or ALPN, use the java-agent to pull in the correct alpn-boot dependency
