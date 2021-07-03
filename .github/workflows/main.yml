@@ -18,9 +18,9 @@ jobs:
     - name: Push to ECR
       run: |
           sudo docker login --username AWS --password ${{secrets.AWS_SECRET_ACCESS_KEY}} ${{secrets.AWS_INSTANCE}} &&
-          sudo docker build -t ambassador $GITHUB_WORKSPACE && wait $!
-          sudo docker tag ambassador:latest ${{secrets.AWS_INSTANCE}}/ambassador:latest && wait $!
-          sudo docker push ${{secrets.AWS_INSTANCE}}/ambassador:latest && wait $!
+          sudo docker build -t ambassador $GITHUB_WORKSPACE & wait $!
+          sudo docker tag ambassador:latest ${{secrets.AWS_INSTANCE}}/ambassador:latest & wait $!
+          sudo docker push ${{secrets.AWS_INSTANCE}}/ambassador:latest
     - name: Deploy new version
       uses: garygrossgarten/github-action-ssh@release
       with:
