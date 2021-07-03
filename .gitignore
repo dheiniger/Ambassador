@@ -40,4 +40,4 @@ build/
 .idea/
 *.iml
 
-src/ambassador/properties.clj
+src/ambassador/properties/live.clj
