@@ -5,7 +5,8 @@
             [ring.util.response :as ring-resp]
             [ambassador.db :as db]
             [clojure.data.json :as json]
-            [postal.core :as postal]))
+            [postal.core :as postal]
+            [ambassador.properties.live :as props]))
 
 (defn give
   [_]
@@ -19,7 +20,12 @@
 
 (defn contact
   [_]
-  (postal/send-message {:from "daniel.r.heiniger@gmail.com"
+  (postal/send-message {:host (:host props/email)
+                        :user (:user props/email)
+                        :pass (:pass props/email)
+                        :port (:port props/email)
+                        :tls  true}
+                        {:from "daniel.r.heiniger@gmail.com"
                         :to "daniel.r.heiniger@gmail.com"
                         :subject "Testing from Clojure app"
                         :body "Test."})
