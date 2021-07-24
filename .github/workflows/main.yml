@@ -14,7 +14,9 @@ jobs:
     - name: Install dependencies
       run:  lein deps
     - name: Run tests
-      run:  lein test      
+      run:  lein test  
+      env:  vusername=${{vusername}}
+            vpassword=${{vpassword}}
     - name: Push to ECR
       run: |
           docker login --username AWS --password ${{secrets.AWS_SECRET_ACCESS_KEY}} ${{secrets.AWS_INSTANCE}} &
