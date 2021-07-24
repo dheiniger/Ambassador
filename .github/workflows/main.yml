@@ -15,8 +15,8 @@ jobs:
       run:  lein deps
     - name: Run tests
       run:  lein test  
-      env:  vusername=${{VUSERNAME}}
-            vpassword=${{VPASSWORD}}
+      env:  vusername=${{secrets.VUSERNAME}}
+            vpassword=${{secrets.VPASSWORD}}
     - name: Push to ECR
       run: |
           docker login --username AWS --password ${{secrets.AWS_SECRET_ACCESS_KEY}} ${{secrets.AWS_INSTANCE}} &
