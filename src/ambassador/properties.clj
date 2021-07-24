@@ -1,0 +1,18 @@
+(ns ambassador.properties
+  (:require [ambassador.vault :as vault]))
+
+(def secrets (vault/read-secrets))
+
+(def db
+  {:dbtype (:db.dbtype secrets)
+   :host (:db.host secrets)
+   :dbname (:db.dbname secrets)
+   :user (:db.user secrets)
+   :password (:db.password secrets)})
+
+(def email
+  {:host (:message.email.host secrets)
+   :user (:message.email.user secrets)
+   :pass (:message.email.pass secrets)
+   :port 587
+   :tls  true})

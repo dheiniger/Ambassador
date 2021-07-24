@@ -8,6 +8,7 @@
   (::bootstrap/service-fn (bootstrap/create-servlet service/service)))
 
 (deftest home-page-test
+  (prn "Testing now...")
  true)
 
 (deftest about-page-test

@@ -1,11 +1,11 @@
 (ns ambassador.db
   (:require [next.jdbc :as jdbc]
-            [ambassador.properties.live :as props]
+            [ambassador.properties :as p]
             [clojure.string :as str]
             [clojure.spec.alpha :as spec]
             [net.cgrand.enlive-html :as html]))
 
-(def db-props props/db)
+(def db-props p/db)
 
 (def db {:dbtype               (:dbtype db-props)
          :host                 (:host db-props)
