@@ -13,8 +13,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install dependencies
       run:  lein deps
-    - name: set environment
-      run:  echo "{vusername}=${{vusername}}" >> $GITHUB_ENV
     - name: Run tests
       run:  lein test      
     - name: Push to ECR
