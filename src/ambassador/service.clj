@@ -6,7 +6,7 @@
             [ambassador.db :as db]
             [clojure.data.json :as json]
             [postal.core :as postal]
-            [ambassador.properties.live :as props]))
+            [ambassador.properties :as p]))
 
 (defn give
   [_]
@@ -20,10 +20,10 @@
 
 (defn contact
   [_]
-  (postal/send-message {:host (:host props/email)
-                        :user (:user props/email)
-                        :pass (:pass props/email)
-                        :port (:port props/email)
+  (postal/send-message {:host (:host p/email)
+                        :user (:user p/email)
+                        :pass (:pass p/email)
+                        :port (:port p/email)
                         :tls  true}
                         {:from "daniel.r.heiniger@gmail.com"
                         :to "daniel.r.heiniger@gmail.com"

@@ -17,8 +17,7 @@
                  [enlive "1.1.6"]
                  [amperity/vault-clj "1.0.3"]
                  [com.draines/postal "2.0.4"]
-                 ;[environ "1.2.0"]
-                 ]
+                 [environ "1.2.0"]]
   :min-lein-version "2.0.0"
   :resource-paths ["config", "resources"]
   ;; If you use HTTP/2 or ALPN, use the java-agent to pull in the correct alpn-boot dependency
