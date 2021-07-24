@@ -12,11 +12,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies
-      run: lein deps
+      run:  lein deps
+    - name: set environment
+      run:  echo "{vusername}=${{value}}" >> $GITHUB_ENV
     - name: Run tests
-      run:  export vusername=${{vusername}} 
-            export vpassword=${{vpassword}} 
-            lein test      
+      run:  lein test      
     - name: Push to ECR
       run: |
           docker login --username AWS --password ${{secrets.AWS_SECRET_ACCESS_KEY}} ${{secrets.AWS_INSTANCE}} &
