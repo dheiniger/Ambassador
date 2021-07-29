@@ -6,20 +6,24 @@
             [ambassador.db :as db]
             [clojure.data.json :as json]
             [postal.core :as postal]
-            [ambassador.properties :as p]))
+            [ambassador.properties :as p]
+            [clojure.tools.logging :as log]))
 
 (defn give
   [_]
+  (log/info "Accessed /give")
   {:status 501
    :body "Not yet implemented"})
 
 (defn bible
   [_]
+  (log/info "Accessed /Bible")
   {:status 501
    :body "Bible verses are not available here yet"})
 
 (defn contact
   [_]
+  (log/info "Accessed /contact")
   (postal/send-message {:host (:host p/email)
                         :user (:user p/email)
                         :pass (:pass p/email)
