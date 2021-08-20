@@ -18,9 +18,16 @@ jobs:
       env:  
         vusername: ${{secrets.VUSERNAME}}
         vpassword: ${{secrets.VPASSWORD}}
+    - name: Configure AWS credentials from Production account
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_SECRET_ACCESS_ID }}
+        aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+        aws-region: us-west-2
     - name: Push to ECR
       run: |
-          docker login --username AWS --password ${{secrets.AWS_SECRET_ACCESS_KEY}} ${{secrets.AWS_INSTANCE}} 
+          aws ecr get-login-password | docker login --username AWS --password-stdin ${{secrets.AWS_INSTANCE}} 
+          #docker login --username AWS --password ${{secrets.AWS_SECRET_ACCESS_KEY}} ${{secrets.AWS_INSTANCE}} 
           docker build -t ambassador/ambassador $GITHUB_WORKSPACE & wait $!
           docker tag ambassador/ambassador:latest ${{secrets.AWS_INSTANCE}}/ambassador/ambassador:latest & wait $!
           docker push ${{secrets.AWS_INSTANCE}}/ambassador/ambassador:latest
