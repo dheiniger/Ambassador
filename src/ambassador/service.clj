@@ -24,6 +24,10 @@
 (defn contact
   [_]
   (log/info "Accessed /contact")
+  (log/info ":host " (:host p/email) "\n"
+            ":user " (:user p/email) "\n"
+            ":pass " (:pass p/email) "\n"
+            ":port " (:port p/email))
   (postal/send-message {:host (:host p/email)
                         :user (:user p/email)
                         :pass (:pass p/email)
