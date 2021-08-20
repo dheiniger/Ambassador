@@ -7,27 +7,23 @@
             [clojure.data.json :as json]
             [postal.core :as postal]
             [ambassador.properties :as p]
-            [clojure.tools.logging :as log]))
+            [io.pedestal.log :as log]))
 
 (defn give
   [_]
-  (log/info "Accessed /give")
+  (log/info :msg "Accessed /give")
   {:status 501
    :body "Not yet implemented"})
 
 (defn bible
   [_]
-  (log/info "Accessed /Bible")
+  (log/info :msg "Accessed /Bible")
   {:status 501
    :body "Bible verses are not available here yet"})
 
 (defn contact
   [_]
-  (log/info "Accessed /contact")
-  (log/info ":host " (:host p/email) "\n"
-            ":user " (:user p/email) "\n"
-            ":pass " (:pass p/email) "\n"
-            ":port " (:port p/email))
+  (log/info :msg "Accessed /contact")
   (postal/send-message {:host (:host p/email)
                         :user (:user p/email)
                         :pass (:pass p/email)
