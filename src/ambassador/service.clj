@@ -7,19 +7,31 @@
             [clojure.data.json :as json]
             [postal.core :as postal]
             [ambassador.properties :as p]
+            [clj-http.client :as client]
+            [hickory.core :as hickory]
+            [hickory.select :as s]
             [io.pedestal.log :as log]))
 
 (defn give
   [_]
   (log/info :msg "Accessed /give")
   {:status 501
-   :body "Not yet implemented"})
+   :body   "Not yet implemented"})
 
 (defn bible
   [_]
   (log/info :msg "Accessed /Bible")
   {:status 501
-   :body "Bible verses are not available here yet"})
+   :body   "Bible verses are not available here yet"})
+
+(defn messages
+  [_]
+  (let [response-body (:body (client/get "https://soundcloud.com/redeemer-norwalk"))
+        audio-content (s/select (s/class "audible") (hickory/as-hickory (hickory/parse response-body)))
+        each (flatten (map #(list (first (:content (second (:content %))))) audio-content))]
+    {:status 200
+     :body   (json/write-str (map #(assoc {} :title (first (:content %))
+                                             :href (:href (:attrs %))) each))}))
 
 (defn contact
   [_]
@@ -29,18 +41,19 @@
                         :pass (:pass p/email)
                         :port (:port p/email)
                         :tls  true}
-                        {:from "daniel.r.heiniger@gmail.com"
-                        :to "daniel.r.heiniger@gmail.com"
+                       {:from    "daniel.r.heiniger@gmail.com"
+                        :to      "daniel.r.heiniger@gmail.com"
                         :subject "Testing from Clojure app"
-                        :body "Test."})
+                        :body    "Test."})
   {:status 202
-   :body "Confirmed"})
+   :body   "Confirmed"})
 
 (def common-interceptors [(body-params/body-params) http/html-body])
 
 ;; Tabular routes
 (def routes #{["/give" :get (conj common-interceptors `give)]
               ["/bible" :get (conj common-interceptors `bible)]
+              ["/messages" :get (conj common-interceptors `messages)]
               ["/contact" :get (conj common-interceptors `contact)]})
 
 
