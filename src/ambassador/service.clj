@@ -4,12 +4,9 @@
             [io.pedestal.http.body-params :as body-params]
             [ring.util.response :as ring-resp]
             [ambassador.db :as db]
-            [clojure.data.json :as json]
+            [ambassador.spotify :as spotify]
             [postal.core :as postal]
             [ambassador.properties :as p]
-            [clj-http.client :as client]
-            [hickory.core :as hickory]
-            [hickory.select :as s]
             [io.pedestal.log :as log]))
 
 (defn give
@@ -26,12 +23,10 @@
 
 (defn messages
   [_]
-  (let [response-body (:body (client/get "https://soundcloud.com/redeemer-norwalk"))
-        audio-content (s/select (s/class "audible") (hickory/as-hickory (hickory/parse response-body)))
-        each (flatten (map #(list (first (:content (second (:content %))))) audio-content))]
-    {:status 200
-     :body   (json/write-str (map #(assoc {} :title (first (:content %))
-                                             :href (:href (:attrs %))) each))}))
+  (log/info :msg "Accessed /messages")
+  (let [spotify-access-token (spotify/retrieve-spotify-access-token)]
+  {:status 501
+   :body  spotify-access-token}))
 
 (defn contact
   [_]
@@ -47,6 +42,8 @@
                         :body    "Test."})
   {:status 202
    :body   "Confirmed"})
+
+
 
 (def common-interceptors [(body-params/body-params) http/html-body])
 

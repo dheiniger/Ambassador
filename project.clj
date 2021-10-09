@@ -16,7 +16,6 @@
                  [org.clojure/data.json "1.0.0"]
                  [clj-http "3.12.3"]
                  [enlive "1.1.6"]
-                 [hickory "0.7.1"]
                  [amperity/vault-clj "1.0.3"]
                  [com.draines/postal "2.0.4"]
                  [environ "1.2.0"]]
