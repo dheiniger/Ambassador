@@ -16,3 +16,9 @@
    :pass (:message.email.pass secrets)
    :port 587
    :tls  true})
+
+(def spotify
+  {:api-url "https://api.spotify.com"
+   :authorization-url "https://accounts.spotify.com/api/token"
+   :client-id (:spotify.client_id secrets)
+   :client-secret (:spotify.client_secret secrets)})
